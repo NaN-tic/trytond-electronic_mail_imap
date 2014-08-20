@@ -61,4 +61,8 @@ class IMAPServer:
             else:
                 cls.raise_user_error('invalid_state_server',
                     error_args=(server.state,))
+        for server, emails in mails:
+            ElectronicMail.write(emails, [{
+                        'flag_received': True,
+                        }])
         return mails
