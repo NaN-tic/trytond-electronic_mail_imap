@@ -34,6 +34,10 @@ class IMAPServer:
     @ModelView.button
     def get_emails(cls, servers):
         "Get emails from server and save like ElectronicMail module"
+        cls.fetch_emails(servers)
+
+    @classmethod
+    def fetch_emails(cls, servers):
         ElectronicMail = Pool().get('electronic.mail')
         mails = {}
         for server in servers:
@@ -61,8 +65,9 @@ class IMAPServer:
             else:
                 cls.raise_user_error('invalid_state_server',
                     error_args=(server.state,))
-        for server, emails in mails:
-            ElectronicMail.write(emails, [{
-                        'flag_received': True,
-                        }])
+        for server, emails in mails.iteritems():
+            if emails:
+                ElectronicMail.write(emails, {
+                            'flag_received': True,
+                            })
         return mails
