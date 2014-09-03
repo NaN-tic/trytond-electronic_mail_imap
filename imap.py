@@ -78,14 +78,8 @@ class IMAPServer:
         Cron get mails:
         - State: active
         """
-        Date = Pool().get('ir.date')
-        today = Date.today()
-
         servers = cls.search([
                 ('state', '=', 'done'),
-                ('start_date', '<=', today),
-                ['OR', ('end_date', '>=', today), ('end_date', '=', None)],
                 ])
         cls.get_mails(servers)
         return True
-
