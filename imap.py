@@ -25,19 +25,19 @@ class IMAPServer:
                 'invalid_state_server': 'IMAP server "%s" is in draft state',
                 })
         cls._buttons.update({
-            'get_emails': {
+            'get_mails': {
                 'invisible': Eval('state') == 'draft',
                 },
             })
 
     @classmethod
     @ModelView.button
-    def get_emails(cls, servers):
-        "Get emails from server and save like ElectronicMail module"
-        cls.fetch_emails(servers)
+    def get_mails(cls, servers):
+        "Get mails from server and save like ElectronicMail module"
+        cls.fetch_mails(servers)
 
     @classmethod
-    def fetch_emails(cls, servers):
+    def fetch_mails(cls, servers):
         ElectronicMail = Pool().get('electronic.mail')
         mails = {}
         for server in servers:
@@ -71,3 +71,21 @@ class IMAPServer:
                             'flag_received': True,
                             })
         return mails
+
+    @classmethod
+    def get_mails_cron(cls):
+        """
+        Cron get mails:
+        - State: active
+        """
+        Date = Pool().get('ir.date')
+        today = Date.today()
+
+        servers = cls.search([
+                ('state', '=', 'done'),
+                ('start_date', '<=', today),
+                ['OR', ('end_date', '>=', today), ('end_date', '=', None)],
+                ])
+        cls.get_mails(servers)
+        return True
+
