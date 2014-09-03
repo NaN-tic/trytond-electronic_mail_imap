@@ -11,12 +11,15 @@
         <record model="res.user" id="user_imap">
             <field name="login">user_cron_imap</field>
             <field name="name">Cron IMAP</field>
-            <field name="signature"></field>
             <field name="active" eval="False"/>
         </record>
         <record model="res.user-res.group" id="user_imap_imap_group">
             <field name="user" ref="user_imap"/>
             <field name="group" ref="imap.group_imap"/>
+        </record>
+        <record model="res.user-res.group" id="user_imap_activity_admin_group">
+            <field name="user" ref="user_imap"/>
+            <field name="group" ref="activity.group_activity_admin"/>
         </record>
         <record model="res.user-res.group" id="user_imap_activity_group">
             <field name="user" ref="user_imap"/>
@@ -28,14 +31,14 @@
         </record>
 
         <!-- get_mails.cron -->
-        <record model="ir.cron" id="cron_contract">
+        <record model="ir.cron" id="cron_imap">
             <field name="name">Get Mails</field>
             <field name="request_user" ref="res.user_admin"/>
             <field name="user" ref="user_imap"/>
             <field name="active" eval="True"/>
-            <field name="interval_number">5</field>
+            <field name="interval_number" eval="5"/>
             <field name="interval_type">minutes</field>
-            <field name="number_calls">-1</field>
+            <field name="number_calls" eval="-1"/>
             <field name="repeat_missed" eval="False"/>
             <field name="model">imap.server</field>
             <field name="function">get_mails_cron</field>
