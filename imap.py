@@ -3,7 +3,6 @@
 from trytond.pool import Pool, PoolMeta
 from trytond.model import ModelView, fields
 from trytond.pyson import Eval
-
 from email import message_from_string
 import chardet
 import logging
@@ -60,6 +59,13 @@ class IMAPServer:
                     if isinstance(msg, unicode):
                         msg = msg.encode('utf-8')
                     mail = message_from_string(msg)
+                    if 'message-id' in mail and mail.get('message-id', False):
+                        duplicated_mail = ElectronicMail.search([
+                            ('message_id', '=', mail.get('message-id')),
+                            ])
+                        if duplicated_mail:
+                            mails[server.id].append(duplicated_mail[0])
+                            continue
                     mails[server.id].append(ElectronicMail.create_from_email(
                             mail, server.mailbox))
             else:
