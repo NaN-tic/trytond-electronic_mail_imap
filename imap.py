@@ -66,7 +66,7 @@ class IMAPServer:
                         if duplicated_mail:
                             mails[server.id].append(duplicated_mail[0])
                             continue
-                    mails[server.id].append(ElectronicMail.create_from_email(
+                    mails[server.id].append(ElectronicMail.create_from_mail(
                             mail, server.mailbox))
             else:
                 cls.raise_user_error('invalid_state_server',
