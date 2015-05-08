@@ -17,14 +17,6 @@
             <field name="user" ref="user_imap"/>
             <field name="group" ref="imap.group_imap"/>
         </record>
-        <record model="res.user-res.group" id="user_imap_activity_admin_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="activity.group_activity_admin"/>
-        </record>
-        <record model="res.user-res.group" id="user_imap_activity_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="activity.group_activity"/>
-        </record>
         <record model="res.user-res.group" id="user_imap_electronic_mail_group">
             <field name="user" ref="user_imap"/>
             <field name="group" ref="electronic_mail.group_email_user"/>
@@ -42,6 +34,16 @@
             <field name="repeat_missed" eval="False"/>
             <field name="model">imap.server</field>
             <field name="function">get_mails_cron</field>
+        </record>
+    </data>
+    <data depends="activity">
+        <record model="res.user-res.group" id="user_imap_activity_admin_group">
+            <field name="user" ref="user_imap"/>
+            <field name="group" ref="activity.group_activity_admin"/>
+        </record>
+        <record model="res.user-res.group" id="user_imap_activity_group">
+            <field name="user" ref="user_imap"/>
+            <field name="group" ref="activity.group_activity"/>
         </record>
     </data>
 </tryton>
