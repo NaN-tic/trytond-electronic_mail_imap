@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
 <data>
     <xpath expr="/form/group[@id='buttons']" position="replace">
         <group colspan="4" col="4" id="buttons">
@@ -8,7 +10,6 @@
             <button name="get_mails" string="Get Emails" icon="tryton-mail-message-new"/>
         </group>
     </xpath>
-
     <xpath expr="/form/separator[@id='user']" position="before">
         <separator id="local" string="Local Information" colspan="6"/>
         <label name="mailbox"/>
