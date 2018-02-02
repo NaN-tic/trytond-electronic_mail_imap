@@ -8,11 +8,12 @@ import chardet
 import logging
 
 __all__ = ['IMAPServer']
-__metaclass__ = PoolMeta
 
 
 class IMAPServer:
     __name__ = 'imap.server'
+    __metaclass__ = PoolMeta
+
 
     mailbox = fields.Many2One('electronic.mail.mailbox', 'Mailbox',
         required=True)

@@ -7,17 +7,19 @@ __all__ = [
     'ElectronicMailConfiguration',
     'ElectronicMailConfigurationCompany',
     ]
-__metaclass__ = PoolMeta
 
 
 class ElectronicMailConfiguration:
     __name__ = 'electronic.mail.configuration'
+    __metaclass__ = PoolMeta
 
     inbox = fields.Function(fields.Many2One('electronic.mail.mailbox',
             'Inbox', required=True),
         'get_fields', setter='set_fields')
 
+
 class ElectronicMailConfigurationCompany:
     __name__ = 'electronic.mail.configuration.company'
+    __metaclass__ = PoolMeta
 
     inbox = fields.Many2One('electronic.mail.mailbox', 'Inbox')
