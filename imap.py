@@ -10,9 +10,8 @@ import logging
 __all__ = ['IMAPServer']
 
 
-class IMAPServer:
+class IMAPServer(metaclass=PoolMeta):
     __name__ = 'imap.server'
-    __metaclass__ = PoolMeta
 
 
     mailbox = fields.Many2One('electronic.mail.mailbox', 'Mailbox',
@@ -50,14 +49,14 @@ class IMAPServer:
                         len(messages),
                         server.name,
                         ))
-                for message_id, message in messages.iteritems():
+                for message_id, message in messages.items():
                     msg = message[0][1]
                     if not isinstance(msg, str):
                         encoding = chardet.detect(msg)
                         msg = msg.decode(encoding.get('encoding'))
                     # Warning: 'message_from_string' doesn't always work
-                    # correctly on unicode, we must use utf-8 strings.
-                    if isinstance(msg, unicode):
+                    # correctly on unicode, we must use utf-8 bytes.
+                    if isinstance(msg, str):
                         msg = msg.encode('utf-8')
                     mail = message_from_string(msg)
                     if 'message-id' in mail and mail.get('message-id', False):
@@ -72,7 +71,7 @@ class IMAPServer:
             else:
                 cls.raise_user_error('invalid_state_server',
                     error_args=(server.state,))
-        for server, emails in mails.iteritems():
+        for server, emails in mails.items():
             if emails:
                 ElectronicMail.write(emails, {
                             'flag_received': True,
