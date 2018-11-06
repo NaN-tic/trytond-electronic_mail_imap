@@ -1,21 +1,24 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.pool import Pool, PoolMeta
-from trytond.model import ModelView, fields
+from trytond.model import ModelView, fields, ModelSQL
 from trytond.pyson import Eval
 from email import message_from_string
 import chardet
 import logging
+import re
 
-__all__ = ['IMAPServer']
-__metaclass__ = PoolMeta
+__all__ = ['IMAPServer', 'IMAPServerParty']
 
 
 class IMAPServer:
     __name__ = 'imap.server'
+    __metaclass__ = PoolMeta
 
     mailbox = fields.Many2One('electronic.mail.mailbox', 'Mailbox',
         required=True)
+    from_parties = fields.Many2Many('imap.server-party.party', 'imap_server',
+        'party', 'From Parties', readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -33,22 +36,20 @@ class IMAPServer:
     @ModelView.button
     def get_mails(cls, servers):
         "Get mails from server and save like ElectronicMail module"
-        cls.fetch_mails(servers)
-
-    @classmethod
-    def fetch_mails(cls, servers):
         ElectronicMail = Pool().get('electronic.mail')
         mails = {}
+        mail_pattern = '\S+@\S+'
         for server in servers:
             mails[server.id] = []
             if server.state != 'draft':
                 imapper = cls.connect(server)
-                messages = cls.fetch(imapper, server)
+                messages = server.fetch(imapper)
                 logging.getLogger('IMAPServer').info(
-                        'Process %s email(s) from %s' % (
+                    'Process %s email(s) from %s' % (
                         len(messages),
                         server.name,
                         ))
+                from_parties = set([x.email for x in server.from_parties])
                 for message_id, message in messages.iteritems():
                     msg = message[0][1]
                     if not isinstance(msg, str):
@@ -59,6 +60,11 @@ class IMAPServer:
                     if isinstance(msg, unicode):
                         msg = msg.encode('utf-8')
                     mail = message_from_string(msg)
+                    mail_from = re.findall(mail_pattern, mail.get('From', ''))
+                    parsed_mail_from = set([x.replace('<', '').replace('>', '') \
+                        for x in mail_from])
+                    if not parsed_mail_from | from_parties:
+                        continue
                     if 'message-id' in mail and mail.get('message-id', False):
                         duplicated_mail = ElectronicMail.search([
                             ('message_id', '=', mail.get('message-id')),
@@ -74,9 +80,8 @@ class IMAPServer:
         for server, emails in mails.iteritems():
             if emails:
                 ElectronicMail.write(emails, {
-                            'flag_received': True,
-                            })
-        return mails
+                    'flag_received': True,
+                })
 
     @classmethod
     def get_mails_cron(cls):
@@ -89,3 +94,13 @@ class IMAPServer:
                 ])
         cls.get_mails(servers)
         return True
+
+
+class IMAPServerParty(ModelSQL):
+    'IMAPServer - Party'
+    __name__ = 'imap.server-party.party'
+
+    party = fields.Many2One('party.party', 'Party', required=True, select=True,
+        ondelete='CASCADE')
+    imap_server = fields.Many2One('imap.server', 'IMAPServer', required=True,
+        select=True, ondelete='CASCADE')

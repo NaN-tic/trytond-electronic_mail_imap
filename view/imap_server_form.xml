@@ -4,15 +4,19 @@
 <data>
     <xpath expr="/form/group[@id='buttons']" position="replace">
         <group colspan="4" col="4" id="buttons">
-            <button name="draft" string="Draft" icon="tryton-clear"/>
-            <button name="done" string="Confirm" icon="tryton-go-next"/>
-            <button name="test" string="Test Connection" icon="tryton-ok"/>
-            <button name="get_mails" string="Get Emails" icon="tryton-mail-message-new"/>
+            <button name="draft" icon="tryton-clear"/>
+            <button name="done" icon="tryton-go-next"/>
+            <button name="test" icon="tryton-ok"/>
+            <button name="get_mails" icon="tryton-mail-message-new"/>
         </group>
     </xpath>
-    <xpath expr="/form/separator[@id='user']" position="before">
+    <xpath expr="/form/field[@name='password']" position="after">
         <separator id="local" string="Local Information" colspan="6"/>
         <label name="mailbox"/>
         <field name="mailbox"/>
     </xpath>
+    <xpath expr="/form/field[@name='criterion']" position="after">
+        <field name="from_parties" colspan="6"/>
+    </xpath>
+
 </data>
