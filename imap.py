@@ -63,7 +63,7 @@ class IMAPServer(metaclass=PoolMeta):
                     mail_from = re.findall(mail_pattern, mail.get('From', ''))
                     parsed_mail_from = set([x.replace('<', '').replace('>', '') \
                         for x in mail_from])
-                    if not parsed_mail_from | from_parties:
+                    if not parsed_mail_from & from_parties:
                         continue
                     if 'message-id' in mail and mail.get('message-id', False):
                         duplicated_mail = ElectronicMail.search([
