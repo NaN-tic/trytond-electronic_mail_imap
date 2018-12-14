@@ -61,9 +61,25 @@ class IMAPServer:
                         msg = msg.encode('utf-8')
                     mail = message_from_string(msg)
                     mail_from = re.findall(mail_pattern, mail.get('From', ''))
+                    mail_to = re.findall(mail_pattern, mail.get('To', ''))
+                    mail_cc = re.findall(mail_pattern, mail.get('CC', ''))
+                    mail_bcc = re.findall(mail_pattern, mail.get('BCC', ''))
+                    mail_reply_to = re.findall(mail_pattern,
+                        mail.get('Reply-To', ''))
                     parsed_mail_from = set([x.replace('<', '').replace('>', '') \
                         for x in mail_from])
-                    if not parsed_mail_from & from_parties:
+                    parsed_mail_to = set([x.replace('<', '').replace('>', '') \
+                        for x in mail_to])
+                    parsed_mail_cc = set([x.replace('<', '').replace('>', '') \
+                        for x in mail_cc])
+                    parsed_mail_bcc = set([x.replace('<', '').replace('>', '') \
+                        for x in mail_bcc])
+                    parsed_mail_reply_to = set([x.replace('<', '').replace('>', '') \
+                        for x in mail_reply_to])
+                    mail_addresses = parsed_mail_from | parsed_mail_to | \
+                        parsed_mail_cc | parsed_mail_bcc | \
+                        parsed_mail_reply_to
+                    if not mail_addresses & from_parties:
                         continue
                     if 'message-id' in mail and mail.get('message-id', False):
                         duplicated_mail = ElectronicMail.search([
