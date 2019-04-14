@@ -10,8 +10,17 @@ import re
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 
-__all__ = ['IMAPServer', 'IMAPServerParty']
+__all__ = ['IMAPServer', 'IMAPServerParty', 'Cron']
 
+class Cron(metaclass=PoolMeta):
+    __name__ = 'ir.cron'
+
+    @classmethod
+    def __setup__(cls):
+        super(Cron, cls).__setup__()
+        cls.method.selection.extend([
+            ('imap.server|get_mails_cron', "Get Mails")
+        ])
 
 class IMAPServer(metaclass=PoolMeta):
     __name__ = 'imap.server'

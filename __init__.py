@@ -10,6 +10,7 @@ def register():
     Pool.register(
         electronic_mail_configuration.ElectronicMailConfiguration,
         electronic_mail_configuration.ElectronicMailConfigurationCompany,
+        imap.Cron,
         imap.IMAPServer,
         imap.IMAPServerParty,
         party.Party,

@@ -26,16 +26,10 @@
 
         <!-- get_mails.cron -->
         <record model="ir.cron" id="cron_imap">
-            <field name="name">Get Mails</field>
-            <field name="request_user" ref="res.user_admin"/>
-            <field name="user" ref="user_imap"/>
             <field name="active" eval="True"/>
             <field name="interval_number" eval="5"/>
             <field name="interval_type">minutes</field>
-            <field name="number_calls" eval="-1"/>
-            <field name="repeat_missed" eval="False"/>
-            <field name="model">imap.server</field>
-            <field name="function">get_mails_cron</field>
+            <field name="method">imap.server|get_mails_cron</field>
         </record>
     </data>
     <data depends="activity">
