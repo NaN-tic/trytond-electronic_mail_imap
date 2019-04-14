@@ -7,6 +7,8 @@ from email import message_from_string
 import chardet
 import logging
 import re
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 __all__ = ['IMAPServer', 'IMAPServerParty']
 
@@ -23,9 +25,6 @@ class IMAPServer(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(IMAPServer, cls).__setup__()
-        cls._error_messages.update({
-                'invalid_state_server': 'IMAP server "%s" is in draft state',
-                })
         cls._buttons.update({
             'get_mails': {
                 'invisible': Eval('state') == 'draft',
@@ -75,8 +74,9 @@ class IMAPServer(metaclass=PoolMeta):
                     mails[server.id].append(ElectronicMail.create_from_mail(
                             mail, server.mailbox))
             else:
-                cls.raise_user_error('invalid_state_server',
-                    error_args=(server.state,))
+                raise UserError(gettext(
+                    'electronic_mail_imap.invalid_state_server',
+                    server=server.state))
         for server, emails in mails.items():
             if emails:
                 ElectronicMail.write(emails, {
