@@ -5,9 +5,9 @@
     <xpath expr="/form/group[@id='buttons']" position="replace">
         <group colspan="4" col="4" id="buttons">
             <button name="draft" icon="tryton-clear"/>
-            <button name="done" icon="tryton-go-next"/>
+            <button name="done" icon="tryton-forward"/>
             <button name="test" icon="tryton-ok"/>
-            <button name="get_mails" icon="tryton-mail-message-new"/>
+            <button name="get_mails" icon="tryton-email"/>
         </group>
     </xpath>
     <xpath expr="/form/field[@name='password']" position="after">
