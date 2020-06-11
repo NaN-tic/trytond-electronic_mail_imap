@@ -46,7 +46,7 @@ class IMAPServer(metaclass=PoolMeta):
         "Get mails from server and save like ElectronicMail module"
         ElectronicMail = Pool().get('electronic.mail')
         mails = {}
-        mail_pattern = '\S+@\S+'
+        mail_pattern = r'\S+@\S+'
         for server in servers:
             mails[server.id] = []
             if server.state != 'draft':
