@@ -2,10 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:imap.server:"
-msgid "IMAP server \"%s\" is in draft state"
-msgstr "El servidor IMAP \"%s\" está en estado de borrador"
-
 msgctxt "field:electronic.mail.configuration,inbox:"
 msgid "Inbox"
 msgstr "Bandeja de entrada"
@@ -22,37 +18,13 @@ msgctxt "field:imap.server,mailbox:"
 msgid "Mailbox"
 msgstr "Buzón de correo"
 
-msgctxt "field:imap.server-party.party,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:imap.server-party.party,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
-msgctxt "field:imap.server-party.party,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:imap.server-party.party,imap_server:"
 msgid "IMAPServer"
 msgstr "Servidor IMAP"
 
 msgctxt "field:imap.server-party.party,party:"
 msgid "Party"
-msgstr "Terceros"
-
-msgctxt "field:imap.server-party.party,rec_name:"
-msgid "Record Name"
-msgstr "Nombre del registro"
-
-msgctxt "field:imap.server-party.party,write_date:"
-msgid "Write Date"
-msgstr "Fecha modificación"
-
-msgctxt "field:imap.server-party.party,write_uid:"
-msgid "Write User"
-msgstr "Usuario modificación"
+msgstr "Tercero"
 
 msgctxt "field:party.party,imap_server:"
 msgid "IMAP Server"
@@ -62,10 +34,18 @@ msgctxt "model:imap.server-party.party,name:"
 msgid "IMAPServer - Party"
 msgstr "Servidor IMAP - Tercero"
 
-msgctxt "model:ir.cron,name:cron_imap"
+msgctxt "model:ir.message,text:invalid_state_server"
+msgid "IMAP server \"%(server)s\" is in draft state"
+msgstr "El servidor IMAP \"%(server)s\" está en estado de borrador"
+
+msgctxt "selection:ir.cron,method:"
 msgid "Get Mails"
 msgstr "Obtener Emails"
 
 msgctxt "view:imap.server:"
 msgid "Local Information"
 msgstr "Información local"
+
+msgctxt "view:party.party:"
+msgid "IMAP"
+msgstr "IMAP"
