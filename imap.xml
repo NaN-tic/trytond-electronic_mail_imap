@@ -9,37 +9,11 @@
             <field name="name">imap_server_form</field>
         </record>
 
-        <!-- imap.user -->
-        <record model="res.user" id="user_imap">
-            <field name="login">user_cron_imap</field>
-            <field name="name">Cron IMAP</field>
-            <field name="active" eval="False"/>
-        </record>
-        <record model="res.user-res.group" id="user_imap_imap_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="imap.group_imap"/>
-        </record>
-        <record model="res.user-res.group" id="user_imap_electronic_mail_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="electronic_mail.group_email_user"/>
-        </record>
-
-        <!-- get_mails.cron -->
         <record model="ir.cron" id="cron_imap">
             <field name="active" eval="True"/>
             <field name="interval_number" eval="5"/>
             <field name="interval_type">minutes</field>
             <field name="method">imap.server|get_mails_cron</field>
-        </record>
-    </data>
-    <data depends="activity">
-        <record model="res.user-res.group" id="user_imap_activity_admin_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="activity.group_activity_admin"/>
-        </record>
-        <record model="res.user-res.group" id="user_imap_activity_group">
-            <field name="user" ref="user_imap"/>
-            <field name="group" ref="activity.group_activity"/>
         </record>
     </data>
 </tryton>
