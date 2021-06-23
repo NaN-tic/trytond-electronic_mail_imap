@@ -97,8 +97,9 @@ class IMAPServer(metaclass=PoolMeta):
                         if duplicated_mail:
                             mails[server.id].append(duplicated_mail[0])
                             continue
-                    mails[server.id].append(ElectronicMail.create_from_mail(
-                            mail, server.mailbox))
+                    new_mail = ElectronicMail.create_from_mail(mail, server.mailbox)
+                    if new_mail:
+                        mails[server.id].append(new_mail)
             else:
                 raise UserError(gettext(
                     'electronic_mail_imap.invalid_state_server',
