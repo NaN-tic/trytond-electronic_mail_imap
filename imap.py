@@ -92,7 +92,7 @@ class IMAPServer(metaclass=PoolMeta):
                             continue
                     if 'message-id' in mail and mail.get('message-id', False):
                         duplicated_mail = ElectronicMail.search([
-                            ('message_id', '=', mail.get('message-id')),
+                            ('message_id', '=', mail.get('message-id').strip('\r\n\t')),
                             ])
                         if duplicated_mail:
                             mails[server.id].append(duplicated_mail[0])
