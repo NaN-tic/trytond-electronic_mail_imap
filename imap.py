@@ -59,6 +59,8 @@ class IMAPServer(metaclass=PoolMeta):
                         ))
                 from_parties = set([x.email for x in server.from_parties])
                 for message_id, message in messages.items():
+                    if not message:
+                        continue
                     msg = message[0][1]
                     if not isinstance(msg, str):
                         encoding = chardet.detect(msg)
