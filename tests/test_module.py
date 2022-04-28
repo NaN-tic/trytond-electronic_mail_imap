@@ -1,7 +1,7 @@
-# The COPYRIGHT file at the top level of this repository contains the full
-# copyright notices and license terms.
-import unittest
-import trytond.tests.test_tryton
+
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
+
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.modules.imap.tests import (create_mock_imap_conn,
     create_imap_server, create_mock_mails)
@@ -16,8 +16,8 @@ except ImportError:
 from trytond.pool import Pool
 
 
-class TestCase(ModuleTestCase):
-    'Test module'
+class ElectronicMailImapTestCase(ModuleTestCase):
+    'Test ElectronicMailImap module'
     module = 'electronic_mail_imap'
 
     @with_transaction()
@@ -74,7 +74,4 @@ class TestCase(ModuleTestCase):
         self.assertEqual(len(received_mails), 3)
 
 
-def suite():
-    suite = trytond.tests.test_tryton.suite()
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCase))
-    return suite
+del ModuleTestCase
