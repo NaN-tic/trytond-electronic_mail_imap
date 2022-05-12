@@ -3,7 +3,7 @@
 # this repository contains the full copyright notices and license terms.
 
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
-from trytond.modules.imap.tests import (create_mock_imap_conn,
+from trytond.modules.imap.tests.test_module import (create_mock_imap_conn,
     create_imap_server, create_mock_mails)
 
 try:
