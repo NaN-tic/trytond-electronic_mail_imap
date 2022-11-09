@@ -129,7 +129,7 @@ class IMAPServerParty(ModelSQL):
     'IMAPServer - Party'
     __name__ = 'imap.server-party.party'
 
-    party = fields.Many2One('party.party', 'Party', required=True, select=True,
+    party = fields.Many2One('party.party', 'Party', required=True,
         ondelete='CASCADE')
     imap_server = fields.Many2One('imap.server', 'IMAPServer', required=True,
-        select=True, ondelete='CASCADE')
+        ondelete='CASCADE')
