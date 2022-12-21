@@ -64,7 +64,7 @@ class IMAPServer(metaclass=PoolMeta):
                     msg = message[0][1]
                     if not isinstance(msg, str):
                         encoding = chardet.detect(msg)
-                        msg = msg.decode(encoding.get('encoding'))
+                        msg = msg.decode(encoding.get('encoding'), errors='ignore')
                     # Warning: 'message_from_string' doesn't always work
                     # correctly on unicode, we must use utf-8 strings.
                     if isinstance(msg, str):
