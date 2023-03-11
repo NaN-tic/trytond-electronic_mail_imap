@@ -9,8 +9,8 @@ import logging
 import re
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
+from trytond.transaction import Transaction
 
-__all__ = ['IMAPServer', 'IMAPServerParty', 'Cron']
 
 class Cron(metaclass=PoolMeta):
     __name__ = 'ir.cron'
@@ -121,7 +121,9 @@ class IMAPServer(metaclass=PoolMeta):
         servers = cls.search([
                 ('state', '=', 'done'),
                 ])
-        cls.get_mails(servers)
+        with Transaction().set_context(queue_name='electronic_mail'):
+            for server in servers:
+                cls.__queue__.get_mails([server])
         return True
 
 
