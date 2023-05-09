@@ -64,29 +64,37 @@ class IMAPServer(metaclass=PoolMeta):
                     msg = message[0][1]
                     if not isinstance(msg, str):
                         encoding = chardet.detect(msg)
-                        msg = msg.decode(encoding.get('encoding'), errors='ignore')
+                        msg = msg.decode(encoding.get('encoding'),
+                            errors='ignore')
                     # Warning: 'message_from_string' doesn't always work
                     # correctly on unicode, we must use utf-8 strings.
                     if isinstance(msg, str):
                         msg = msg.encode('utf-8')
                     mail = message_from_bytes(msg)
                     if from_parties:
-                        mail_from = re.findall(mail_pattern, mail.get('From', ''))
+                        mail_from = re.findall(
+                            mail_pattern, mail.get('From', ''))
                         mail_to = re.findall(mail_pattern, mail.get('To', ''))
                         mail_cc = re.findall(mail_pattern, mail.get('CC', ''))
-                        mail_bcc = re.findall(mail_pattern, mail.get('BCC', ''))
+                        mail_bcc = re.findall(
+                            mail_pattern, mail.get('BCC', ''))
                         mail_reply_to = re.findall(mail_pattern,
                             mail.get('Reply-To', ''))
-                        parsed_mail_from = set([x.replace('<', '').replace('>', '') \
-                            for x in mail_from])
-                        parsed_mail_to = set([x.replace('<', '').replace('>', '') \
-                            for x in mail_to])
-                        parsed_mail_cc = set([x.replace('<', '').replace('>', '') \
-                            for x in mail_cc])
-                        parsed_mail_bcc = set([x.replace('<', '').replace('>', '') \
-                            for x in mail_bcc])
-                        parsed_mail_reply_to = set([x.replace('<', '').replace('>', '') \
-                            for x in mail_reply_to])
+                        parsed_mail_from = set(
+                            [x.replace('<', '').replace('>', '')
+                                for x in mail_from])
+                        parsed_mail_to = set(
+                            [x.replace('<', '').replace('>', '')
+                                for x in mail_to])
+                        parsed_mail_cc = set(
+                            [x.replace('<', '').replace('>', '')
+                                for x in mail_cc])
+                        parsed_mail_bcc = set(
+                            [x.replace('<', '').replace('>', '')
+                                for x in mail_bcc])
+                        parsed_mail_reply_to = set(
+                            [x.replace('<', '').replace('>', '')
+                                for x in mail_reply_to])
                         mail_addresses = (parsed_mail_from | parsed_mail_to |
                             parsed_mail_cc | parsed_mail_bcc |
                             parsed_mail_reply_to)
@@ -94,12 +102,14 @@ class IMAPServer(metaclass=PoolMeta):
                             continue
                     if 'message-id' in mail and mail.get('message-id', False):
                         duplicated_mail = ElectronicMail.search([
-                            ('message_id', '=', mail.get('message-id').strip('\r\n\t')),
+                            ('message_id', '=',
+                                mail.get('message-id').strip('\r\n\t')),
                             ])
                         if duplicated_mail:
                             mails[server.id].append(duplicated_mail[0])
                             continue
-                    new_mail = ElectronicMail.create_from_mail(mail, server.mailbox)
+                    new_mail = ElectronicMail.create_from_mail(mail,
+                        server.mailbox)
                     if new_mail:
                         mails[server.id].append(new_mail)
             else:
