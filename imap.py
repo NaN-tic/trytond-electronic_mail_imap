@@ -22,9 +22,9 @@ class Cron(metaclass=PoolMeta):
             ('imap.server|get_mails_cron', "Get Mails")
         ])
 
+
 class IMAPServer(metaclass=PoolMeta):
     __name__ = 'imap.server'
-
 
     mailbox = fields.Many2One('electronic.mail.mailbox', 'Mailbox',
         required=True)
