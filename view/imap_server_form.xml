@@ -15,7 +15,7 @@
         <label name="mailbox"/>
         <field name="mailbox"/>
     </xpath>
-    <xpath expr="/form/field[@name='criterion']" position="after">
+    <xpath expr="/form/field[@name='destination_folder']" position="after">
         <field name="from_parties" colspan="6"/>
     </xpath>
 
