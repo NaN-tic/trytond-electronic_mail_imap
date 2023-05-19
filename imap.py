@@ -49,6 +49,7 @@ class IMAPServer(metaclass=PoolMeta):
         mail_pattern = r'\S+@\S+'
         for server in servers:
             mails[server.id] = []
+            messages = None
             if server.state != 'draft':
                 imapper = cls.connect(server)
                 messages = server.fetch(imapper)
@@ -112,10 +113,19 @@ class IMAPServer(metaclass=PoolMeta):
                         server.mailbox)
                     if new_mail:
                         mails[server.id].append(new_mail)
+                imapper = cls.connect(server)
+                result = server.action_after(imapper, messages.keys())
+                if result:
+                    logging.getLogger('IMAPServer').info(
+                        'Extra actions on %s email(s) from %s' % (
+                            len(messages),
+                            server.name,
+                            ))
             else:
                 raise UserError(gettext(
                     'electronic_mail_imap.invalid_state_server',
                     server=server.state))
+
         for server, emails in mails.items():
             if emails:
                 ElectronicMail.write(emails, {
