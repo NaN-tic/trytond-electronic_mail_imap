@@ -10,6 +10,9 @@ import re
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from trytond.transaction import Transaction
+from trytond.config import config
+
+QUEUE_NAME = config.get('electronic_mail', 'queue_name', default='default')
 
 
 class Cron(metaclass=PoolMeta):
@@ -141,7 +144,7 @@ class IMAPServer(metaclass=PoolMeta):
         servers = cls.search([
                 ('state', '=', 'done'),
                 ])
-        with Transaction().set_context(queue_name='electronic_mail'):
+        with Transaction().set_context(queue_name=QUEUE_NAME):
             for server in servers:
                 cls.__queue__.get_mails([server])
         return True
