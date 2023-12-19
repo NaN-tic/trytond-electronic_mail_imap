@@ -54,8 +54,8 @@ class IMAPServer(metaclass=PoolMeta):
             mails[server.id] = []
             messages = None
             if server.state != 'draft':
-                imapper = cls.connect(server)
-                messages = server.fetch(imapper)
+                with cls.connect(server) as imapper:
+                    messages = server.fetch(imapper)
                 logging.getLogger('IMAPServer').info(
                     'Process %s email(s) from %s' % (
                         len(messages),
