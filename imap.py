@@ -57,10 +57,9 @@ class IMAPServer(metaclass=PoolMeta):
             if server.state != 'draft':
                 try:
                     imapper = cls.connect(server)
+                    messages = server.fetch(imapper)
                 finally:
-                    if imapper:
-                        messages = server.fetch(imapper)
-                        imapper.logout()
+                    imapper.logout()
 
                 logging.getLogger('IMAPServer').info(
                     'Process %s email(s) from %s' % (
@@ -127,9 +126,9 @@ class IMAPServer(metaclass=PoolMeta):
                 try:
                     imapper = cls.connect(server)
                 finally:
-                    if imapper:
-                        result = server.action_after(imapper, messages.keys())
-                        imapper.logout()
+                    imapper.logout()
+
+                result = server.action_after(imapper, messages.keys())
                 if result:
                     logging.getLogger('IMAPServer').info(
                         'Extra actions on %s email(s) from %s' % (
