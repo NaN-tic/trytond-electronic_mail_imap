@@ -53,77 +53,87 @@ class IMAPServer(metaclass=PoolMeta):
         for server in servers:
             mails[server.id] = []
             messages = None
+
             if server.state != 'draft':
-                with cls.connect(server) as imapper:
-                    messages = server.fetch(imapper)
-                logging.getLogger('IMAPServer').info(
-                    'Process %s email(s) from %s' % (
-                        len(messages),
-                        server.name,
-                        ))
-                from_parties = set([x.email for x in server.from_parties])
-                for message_id, message in messages.items():
-                    if not message:
-                        continue
-                    msg = message[0][1]
-                    if not isinstance(msg, str):
-                        encoding = chardet.detect(msg)
-                        msg = msg.decode(encoding.get('encoding'),
-                            errors='ignore')
-                    # Warning: 'message_from_string' doesn't always work
-                    # correctly on unicode, we must use utf-8 strings.
-                    if isinstance(msg, str):
-                        msg = msg.encode('utf-8')
-                    mail = message_from_bytes(msg)
-                    if from_parties:
-                        mail_from = re.findall(
-                            mail_pattern, mail.get('From', ''))
-                        mail_to = re.findall(mail_pattern, mail.get('To', ''))
-                        mail_cc = re.findall(mail_pattern, mail.get('CC', ''))
-                        mail_bcc = re.findall(
-                            mail_pattern, mail.get('BCC', ''))
-                        mail_reply_to = re.findall(mail_pattern,
-                            mail.get('Reply-To', ''))
-                        parsed_mail_from = set(
-                            [x.replace('<', '').replace('>', '')
-                                for x in mail_from])
-                        parsed_mail_to = set(
-                            [x.replace('<', '').replace('>', '')
-                                for x in mail_to])
-                        parsed_mail_cc = set(
-                            [x.replace('<', '').replace('>', '')
-                                for x in mail_cc])
-                        parsed_mail_bcc = set(
-                            [x.replace('<', '').replace('>', '')
-                                for x in mail_bcc])
-                        parsed_mail_reply_to = set(
-                            [x.replace('<', '').replace('>', '')
-                                for x in mail_reply_to])
-                        mail_addresses = (parsed_mail_from | parsed_mail_to |
-                            parsed_mail_cc | parsed_mail_bcc |
-                            parsed_mail_reply_to)
-                        if not mail_addresses & from_parties:
-                            continue
-                    if 'message-id' in mail and mail.get('message-id', False):
-                        duplicated_mail = ElectronicMail.search([
-                            ('message_id', '=',
-                                mail.get('message-id').strip('\r\n\t')),
-                            ])
-                        if duplicated_mail:
-                            mails[server.id].append(duplicated_mail[0])
-                            continue
-                    new_mail = ElectronicMail.create_from_mail(mail,
-                        server.mailbox)
-                    if new_mail:
-                        mails[server.id].append(new_mail)
-                imapper = cls.connect(server)
-                result = server.action_after(imapper, messages.keys())
-                if result:
-                    logging.getLogger('IMAPServer').info(
-                        'Extra actions on %s email(s) from %s' % (
-                            len(messages),
-                            server.name,
-                            ))
+                try:
+                    imapper = cls.connect(server)
+                finally:
+                    if imapper:
+                        imapper.logout()
+                        messages = server.fetch(imapper)
+                        logging.getLogger('IMAPServer').info(
+                            'Process %s email(s) from %s' % (
+                                len(messages),
+                                server.name,
+                                ))
+                        from_parties = set([x.email for x in server.from_parties])
+                        for message_id, message in messages.items():
+                            if not message:
+                                continue
+                            msg = message[0][1]
+                            if not isinstance(msg, str):
+                                encoding = chardet.detect(msg)
+                                msg = msg.decode(encoding.get('encoding'),
+                                    errors='ignore')
+                            # Warning: 'message_from_string' doesn't always work
+                            # correctly on unicode, we must use utf-8 strings.
+                            if isinstance(msg, str):
+                                msg = msg.encode('utf-8')
+                            mail = message_from_bytes(msg)
+                            if from_parties:
+                                mail_from = re.findall(
+                                    mail_pattern, mail.get('From', ''))
+                                mail_to = re.findall(mail_pattern, mail.get('To', ''))
+                                mail_cc = re.findall(mail_pattern, mail.get('CC', ''))
+                                mail_bcc = re.findall(
+                                    mail_pattern, mail.get('BCC', ''))
+                                mail_reply_to = re.findall(mail_pattern,
+                                    mail.get('Reply-To', ''))
+                                parsed_mail_from = set(
+                                    [x.replace('<', '').replace('>', '')
+                                        for x in mail_from])
+                                parsed_mail_to = set(
+                                    [x.replace('<', '').replace('>', '')
+                                        for x in mail_to])
+                                parsed_mail_cc = set(
+                                    [x.replace('<', '').replace('>', '')
+                                        for x in mail_cc])
+                                parsed_mail_bcc = set(
+                                    [x.replace('<', '').replace('>', '')
+                                        for x in mail_bcc])
+                                parsed_mail_reply_to = set(
+                                    [x.replace('<', '').replace('>', '')
+                                        for x in mail_reply_to])
+                                mail_addresses = (parsed_mail_from | parsed_mail_to |
+                                    parsed_mail_cc | parsed_mail_bcc |
+                                    parsed_mail_reply_to)
+                                if not mail_addresses & from_parties:
+                                    continue
+                            if 'message-id' in mail and mail.get('message-id', False):
+                                duplicated_mail = ElectronicMail.search([
+                                    ('message_id', '=',
+                                        mail.get('message-id').strip('\r\n\t')),
+                                    ])
+                                if duplicated_mail:
+                                    mails[server.id].append(duplicated_mail[0])
+                                    continue
+                            new_mail = ElectronicMail.create_from_mail(mail,
+                                server.mailbox)
+                            if new_mail:
+                                mails[server.id].append(new_mail)
+
+                try:
+                    imapper = cls.connect(server)
+                finally:
+                    if imapper:
+                        imapper.logout()
+                        result = server.action_after(imapper, messages.keys())
+                        if result:
+                            logging.getLogger('IMAPServer').info(
+                                'Extra actions on %s email(s) from %s' % (
+                                    len(messages),
+                                    server.name,
+                                    ))
             else:
                 raise UserError(gettext(
                     'electronic_mail_imap.invalid_state_server',
