@@ -125,10 +125,10 @@ class IMAPServer(metaclass=PoolMeta):
                 result = None
                 try:
                     imapper = cls.connect(server)
+                    result = server.action_after(imapper, messages.keys())
                 finally:
                     imapper.logout()
 
-                result = server.action_after(imapper, messages.keys())
                 if result:
                     logging.getLogger('IMAPServer').info(
                         'Extra actions on %s email(s) from %s' % (
