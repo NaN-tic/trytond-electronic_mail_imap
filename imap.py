@@ -59,7 +59,7 @@ class IMAPServer(metaclass=PoolMeta):
                     imapper = cls.connect(server)
                     messages = server.fetch(imapper)
                 finally:
-                    imapper.logout()
+                    server.logout(imapper)
 
                 logging.getLogger('IMAPServer').info(
                     'Process %s email(s) from %s' % (
@@ -127,7 +127,7 @@ class IMAPServer(metaclass=PoolMeta):
                     imapper = cls.connect(server)
                     result = server.action_after(imapper, messages.keys())
                 finally:
-                    imapper.logout()
+                    server.logout(imapper)
 
                 if result:
                     logging.getLogger('IMAPServer').info(
