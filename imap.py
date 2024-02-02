@@ -58,6 +58,9 @@ class IMAPServer(metaclass=PoolMeta):
                 try:
                     imapper = cls.connect(server)
                     messages = server.fetch(imapper)
+                except UserError as e:
+                    logging.getLogger('IMAPServer').error(str(e))
+                    return
                 finally:
                     server.logout(imapper)
 
@@ -126,6 +129,9 @@ class IMAPServer(metaclass=PoolMeta):
                 try:
                     imapper = cls.connect(server)
                     result = server.action_after(imapper, messages.keys())
+                except UserError as e:
+                    logging.getLogger('IMAPServer').error(str(e))
+                    return
                 finally:
                     server.logout(imapper)
 
