@@ -57,6 +57,10 @@ class IMAPServer(metaclass=PoolMeta):
             if server.state != 'draft':
                 try:
                     imapper = cls.connect(server)
+                except UserError as e:
+                    logging.getLogger('IMAPServer').error(str(e))
+                    return
+                try:
                     messages = server.fetch(imapper)
                 except UserError as e:
                     logging.getLogger('IMAPServer').error(str(e))
