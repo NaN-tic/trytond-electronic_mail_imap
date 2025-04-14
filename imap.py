@@ -59,12 +59,16 @@ class IMAPServer(metaclass=PoolMeta):
                     imapper = cls.connect(server)
                 except UserError as e:
                     logging.getLogger('IMAPServer').error(str(e))
-                    return
+                    continue
+
+                if not imapper:
+                    continue
+
                 try:
                     messages = server.fetch(imapper)
                 except UserError as e:
                     logging.getLogger('IMAPServer').error(str(e))
-                    return
+                    continue
                 finally:
                     server.logout(imapper)
 
