@@ -1,18 +1,20 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.pool import Pool, PoolMeta
-from trytond.model import ModelView, fields, ModelSQL
-from trytond.pyson import Eval
-from email import message_from_bytes
 import chardet
 import logging
 import re
+from email import message_from_bytes
+from trytond.pool import Pool, PoolMeta
+from trytond.model import ModelView, fields, ModelSQL
+from trytond.pyson import Eval
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from trytond.transaction import Transaction
 from trytond.config import config
 
+logger = logging.getLogger(__name__)
 QUEUE_NAME = config.get('electronic_mail', 'queue_name', default='default')
+PRODUCTION_ENV = config.getboolean('database', 'production', default=False)
 
 
 class Cron(metaclass=PoolMeta):
@@ -36,7 +38,7 @@ class IMAPServer(metaclass=PoolMeta):
 
     @classmethod
     def __setup__(cls):
-        super(IMAPServer, cls).__setup__()
+        super().__setup__()
         cls._buttons.update({
             'get_mails': {
                 'invisible': Eval('state') == 'draft',
@@ -48,6 +50,11 @@ class IMAPServer(metaclass=PoolMeta):
     def get_mails(cls, servers):
         "Get mails from server and save like ElectronicMail module"
         ElectronicMail = Pool().get('electronic.mail')
+
+        if not PRODUCTION_ENV:
+            logger.warning('Production mode is not enabled.')
+            return
+
         mails = {}
         mail_pattern = r'\S+@\S+'
         for server in servers:
@@ -58,7 +65,7 @@ class IMAPServer(metaclass=PoolMeta):
                 try:
                     imapper = cls.connect(server)
                 except UserError as e:
-                    logging.getLogger('IMAPServer').error(str(e))
+                    logger.error(str(e))
                     continue
 
                 if not imapper:
@@ -67,12 +74,12 @@ class IMAPServer(metaclass=PoolMeta):
                 try:
                     messages = server.fetch(imapper)
                 except UserError as e:
-                    logging.getLogger('IMAPServer').error(str(e))
+                    logger.error(str(e))
                     continue
                 finally:
                     server.logout(imapper)
 
-                logging.getLogger('IMAPServer').info(
+                logger.info(
                     'Process %s email(s) from %s' % (
                         len(messages),
                         server.name,
@@ -138,13 +145,13 @@ class IMAPServer(metaclass=PoolMeta):
                     imapper = cls.connect(server)
                     result = server.action_after(imapper, messages.keys())
                 except UserError as e:
-                    logging.getLogger('IMAPServer').error(str(e))
+                    logger.error(str(e))
                     continue
                 finally:
                     server.logout(imapper)
 
                 if result:
-                    logging.getLogger('IMAPServer').info(
+                    logger.info(
                         'Extra actions on %s email(s) from %s' % (
                             len(messages),
                             server.name,
@@ -166,6 +173,10 @@ class IMAPServer(metaclass=PoolMeta):
         Cron get mails:
         - State: active
         """
+        if not PRODUCTION_ENV:
+            logger.warning('Production mode is not enabled.')
+            return
+
         servers = cls.search([
                 ('state', '=', 'done'),
                 ])
