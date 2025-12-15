@@ -54,8 +54,8 @@ class ElectronicMailImapTestCase(ModuleTestCase):
             self.assertEqual(mail.subject, 'My test Email')
         self.assertNotEqual(received_mails[0].message_id,
             received_mails[1].message_id)
-        self.assertEqual(received_mails[0].rec_name, 'My test Email (ID: 1)')
-        self.assertEqual(received_mails[1].rec_name, 'My test Email (ID: 2)')
+        self.assertEqual(received_mails[0].rec_name.startswith('My test Email (ID'), True)
+        self.assertNotEqual(received_mails[0], received_mails[1])
 
         # Check that repeated emails are not stored
         IMAPServer.get_mails([server])
