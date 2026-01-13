@@ -4,6 +4,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.model import ModelView, fields, ModelSQL
 from trytond.pyson import Eval
 from email import message_from_bytes
+from email.policy import default
 import chardet
 import logging
 import re
@@ -91,7 +92,7 @@ class IMAPServer(metaclass=PoolMeta):
                     # correctly on unicode, we must use utf-8 strings.
                     if isinstance(msg, str):
                         msg = msg.encode('utf-8')
-                    mail = message_from_bytes(msg)
+                    mail = message_from_bytes(msg, policy=default)
                     if from_parties:
                         mail_from = re.findall(
                             mail_pattern, mail.get('From', ''))
