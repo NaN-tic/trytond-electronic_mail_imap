@@ -9,8 +9,9 @@
             <field name="name">imap_server_form</field>
         </record>
 
+    </data>
+    <data noupdate="1">
         <record model="ir.cron" id="cron_imap">
-            <field name="active" eval="True"/>
             <field name="interval_number" eval="5"/>
             <field name="interval_type">minutes</field>
             <field name="method">imap.server|get_mails_cron</field>
