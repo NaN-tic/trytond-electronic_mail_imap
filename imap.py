@@ -11,8 +11,7 @@ import re
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from trytond.transaction import Transaction
-from trytond.config import config
-
+import trytond.config as config
 QUEUE_NAME = config.get('electronic_mail', 'queue_name', default='default')
 
 
