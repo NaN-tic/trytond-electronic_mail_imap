@@ -1,0 +1,57 @@
+#
+msgid ""
+msgstr ""
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "field:electronic.mail.configuration,inbox:"
+msgid "Inbox"
+msgstr "Beérkező levelek"
+
+msgctxt "field:electronic.mail.configuration.company,inbox:"
+msgid "Inbox"
+msgstr "Beérkező levelek"
+
+msgctxt "field:imap.server,from_parties:"
+msgid "From Parties"
+msgstr "Feladó partnerek"
+
+msgctxt "field:imap.server,mailbox:"
+msgid "Mailbox"
+msgstr "Postafiók"
+
+msgctxt "field:imap.server-party.party,imap_server:"
+msgid "IMAPServer"
+msgstr "IMAP-kiszolgáló"
+
+msgctxt "field:imap.server-party.party,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:party.party,imap_server:"
+msgid "IMAP Server"
+msgstr "IMAP-kiszolgáló"
+
+msgctxt "model:imap.server-party.party,name:"
+msgid "IMAPServer - Party"
+msgstr "IMAP-kiszolgáló - Partner"
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_state_server"
+msgid "IMAP server \"%(server)s\" is in draft state"
+msgstr "A(z) „%(server)s” IMAP-kiszolgáló vázlat állapotú"
+
+msgctxt "selection:ir.cron,method:"
+msgid "Get Mails"
+msgstr "Levelek lekérése"
+
+msgctxt "view:imap.server:"
+msgid "Local Information"
+msgstr "Helyi információk"
+
+msgctxt "view:party.party:"
+msgid "IMAP"
+msgstr "IMAP"
